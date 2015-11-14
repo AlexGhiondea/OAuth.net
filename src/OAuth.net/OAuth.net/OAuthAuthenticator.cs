@@ -65,9 +65,9 @@ namespace OAuth
             return uri + "?" + CreateRequest(uri, method, tokenSecret, Constants.oauth_token, token, Constants.oauth_verifier, verifierPIN);
         }
 
-        public string CreateAuthorizeAddress(string uri, string requestToken, string access, string permissions)
+        public string CreateAuthorizeAddress(string uri, string requestToken)
         {
-            return uri + "?" + requestToken + string.Format("&Access={0}&Permissions={1}", access, permissions);
+            return uri + "&" + requestToken;
         }
 
         public void ParseRequestTokens(string tokens, out string reqToken, out string reqTokenSecret)
