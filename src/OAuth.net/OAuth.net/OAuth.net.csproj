@@ -7,7 +7,7 @@
     <ProjectGuid>{5D84176E-6394-4AA4-866F-930C757395C9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>OAuth.net</RootNamespace>
+    <RootNamespace>OAuth</RootNamespace>
     <AssemblyName>OAuth.net</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -43,9 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="OAuth.cs" />
-    <Compile Include="OAuthSignature.cs" />
-    <Compile Include="OAuthHelpers.cs" />
+    <Compile Include="Helpers\Constants.cs" />
+    <Compile Include="OAuthAuthenticator.cs" />
+    <Compile Include="Helpers\OAuthHelpers.cs" />
     <Compile Include="OAuthMessageHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
