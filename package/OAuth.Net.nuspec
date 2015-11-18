@@ -12,6 +12,6 @@
         <tags>OAuth 1.0a, OAuth 1.0, Authentication, OAuth</tags>
     </metadata>
     <files>
-        <file src="bin\Release\oauth.net.dll" target="lib\net45" />
+        <file src="oauth.net.dll" target="lib\net45" />
     </files>
 </package>
