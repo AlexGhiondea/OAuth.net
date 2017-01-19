@@ -2,18 +2,19 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>OAuth.Net</id>
-        <version>0.6</version>
+        <version>1.0</version>
         <authors>Alex Ghiondea</authors>
         <owners>Alex Ghiondea</owners>
         <copyright>Alex Ghiondea (c) 2015</copyright>
         <licenseUrl>https://raw.githubusercontent.com/AlexGhiondea/OAuth.net/master/LICENSE</licenseUrl>
         <projectUrl>https://github.com/AlexGhiondea/OAuth.net</projectUrl>
         <requireLicenseAcceptance>false</requireLicenseAcceptance>
-        <title>OAuth.net </title>
+        <title>OAuth.net</title>
         <description>Implementation of OAuth 1.0a protocol. Supports transparent authentication via HttpMessageHandler</description>
         <tags>OAuth 1.0a, OAuth 1.0, Authentication, OAuth</tags>
     </metadata>
     <files>
-        <file src="oauth.net.dll" target="lib\net45" />
+        <file src="release\oauth.net.dll" target="lib\net45" />
+        <file src="OAuth.net.core\bin\Release\netstandard1.5\OAuth.net.dll" target="lib\netstandard1.5" />
     </files>
 </package>

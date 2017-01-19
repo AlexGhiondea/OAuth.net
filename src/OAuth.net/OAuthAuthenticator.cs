@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
-using System.Web;
 
 namespace OAuth
 {
@@ -49,7 +45,7 @@ namespace OAuth
 
             foreach (var param in parameters)
             {
-                sb.AppendFormat("{0}={1}&", param.Key, HttpUtility.HtmlEncode(param.Value));
+                sb.AppendFormat("{0}={1}&", param.Key, System.Net.WebUtility.HtmlEncode(param.Value));
             }
             sb.Remove(sb.Length - 1, 1);
             return sb.ToString();

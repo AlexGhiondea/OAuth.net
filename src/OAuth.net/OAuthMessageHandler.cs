@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using System.Net.Http.Handlers;
-using System.Web;
 
 namespace OAuth
 {
@@ -69,7 +66,7 @@ namespace OAuth
             {
                 if (param.Key.StartsWith("oauth"))
                 {
-                    sb.AppendFormat("{0}={1},", param.Key, HttpUtility.HtmlEncode(param.Value));
+                    sb.AppendFormat("{0}={1},", param.Key, System.Net.WebUtility.HtmlEncode(param.Value));
                 }
             }
             sb.Remove(sb.Length - 1, 1);
