@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
     <metadata>
         <id>OAuth.Net</id>
-        <version>1.0</version>
+        <version>1.0.1</version>
         <authors>Alex Ghiondea</authors>
         <owners>Alex Ghiondea</owners>
         <copyright>Alex Ghiondea (c) 2015</copyright>
@@ -12,6 +12,12 @@
         <title>OAuth.net</title>
         <description>Implementation of OAuth 1.0a protocol. Supports transparent authentication via HttpMessageHandler</description>
         <tags>OAuth 1.0a, OAuth 1.0, Authentication, OAuth</tags>
+        <dependencies>
+        <group targetFramework="dnxcore50">
+            <dependency id="NETStandard.Library" version="1.6.0" />
+            <dependency id="System.Security.Cryptography.Algorithms" version="" />
+        </group>
+       </dependencies> 
     </metadata>
     <files>
         <file src="release\oauth.net.dll" target="lib\net45" />
