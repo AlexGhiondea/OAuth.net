@@ -1,60 +1,31 @@
 @echo off
 setlocal
 
-:: Note: We've disabled node reuse because it causes file locking issues.
-::       The issue is that we extend the build with our own targets which
-::       means that that rebuilding cannot successfully delete the task
-::       assembly. 
+set _projectName=OAuth.net
+set _solution=%_projectName%.sln
+set _codeProject=src\%_projectName%.csproj
 
-if not defined VisualStudioVersion (
-    if defined VS140COMNTOOLS (
-        call "%VS140COMNTOOLS%\VsDevCmd.bat"
-        goto :EnvSet
-    )
-
-    if defined VS120COMNTOOLS (
-        call "%VS120COMNTOOLS%\VsDevCmd.bat"
-        goto :EnvSet
-    )
-
-    echo Error: build.cmd requires Visual Studio 2013 or 2015.  
-    echo        Please see https://github.com/dotnet/corefx/blob/master/Documentation/developer-guide.md for build instructions.
-    exit /b 1
+set _config=%1
+if not defined _config (
+  set _config=Debug
 )
 
-:EnvSet
+echo Building Config '%_config%'
+echo Solution: '%_solution%'
+echo Code: '%_codeProject%'
+echo Test: '%_testProject%'
 
-call %~dp0init-tools.cmd
+echo Restoring packages
+dotnet restore
 
-:: Log build command line
-set _buildproj=%~dp0src\Oauth.net.sln
-set _buildlog=%~dp0msbuild.log
-set _buildprefix=echo
-set _buildpostfix=^> "%_buildlog%"
-call :build %*
+echo Cleaning solution
+dotnet clean %_solution%
 
-:: Build
-set _buildprefix=
-set _buildpostfix=
-call :build %*
+echo Building solution
+dotnet build %_solution% -c %_config%
 
-goto :AfterBuild
+echo Creating NuGet package
+dotnet pack --no-build -c %_config% %_codeProject%
 
-:build
-%_buildprefix% msbuild "%_buildproj%" /p:Configuration=Release /nologo /maxcpucount /verbosity:minimal /nodeReuse:false /fileloggerparameters:Verbosity=normal;LogFile="%_buildlog%";Append %* %_buildpostfix%
-set BUILDERRORLEVEL=%ERRORLEVEL%
-goto :eof
-
-:AfterBuild
-
-:: Package the output
-
-echo Packaging files
-if not exist "%~dp0\bin\package\" mkdir "%~dp0\bin\package\"
-call %~dp0\Tools\Nuget.exe pack %~dp0\package\Oauth.net.nuspec -BasePath %~dp0\bin -OutputDirectory %~dp0\bin\package\
-echo.
-:: Pull the build summary from the log file
-findstr /ir /c:".*Warning(s)" /c:".*Error(s)" /c:"Time Elapsed.*" "%_buildlog%"
-echo Build Exit Code = %BUILDERRORLEVEL%
-
-exit /b %BUILDERRORLEVEL%
+endlocal
+@echo on
