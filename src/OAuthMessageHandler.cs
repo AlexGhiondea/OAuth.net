@@ -24,8 +24,11 @@ namespace OAuth
             this.InnerHandler = new HttpClientHandler();
         }
 
-        private string GetAuthenticationHeaderForRequest(Uri requestUri, HttpMethod method)
+        private async Task<string> GetAuthenticationHeaderForRequest(HttpRequestMessage request)
         {
+            Uri requestUri = request.RequestUri;
+            HttpMethod method = request.Method;
+
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>()
             {
                 new KeyValuePair<string,string>(Constants.oauth_consumer_key, _apiKey),
@@ -38,22 +41,33 @@ namespace OAuth
 
             string baseUri = requestUri.OriginalString;
 
-            // We need to handle the case where the request comes with query parameters
+            // We need to handle the case where the request comes with query parameters, in URL or in body
+            string queryString = string.Empty;
             if (!string.IsNullOrEmpty(requestUri.Query))
             {
                 baseUri = requestUri.OriginalString.Replace(requestUri.Query, "");
+                queryString = requestUri.Query;
+            }
 
-                foreach (var param in requestUri.Query.Split(new char[] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries))
+            if (request.Content.Headers.ContentType.MediaType == "application/x-www-form-urlencoded")
+            {
+                string requestContent = await request.Content.ReadAsStringAsync();
+
+                queryString = $"{queryString}&{requestContent}";
+            }
+
+            foreach (var param in queryString.Split(new char[] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries))
+            {
+                var values = param.Split('=');
+                string name = Uri.UnescapeDataString(values[0]);
+                name = name.Replace('+', ' ');
+                string value = string.Empty;
+                if (values.Length > 1)
                 {
-                    var values = param.Split('=');
-                    string name = values[0];
-                    string value = string.Empty;
-                    if (values.Length > 1)
-                    {
-                        value = values[1];
-                    }
-                    parameters.Add(new KeyValuePair<string, string>(name, value));
+                    value = Uri.UnescapeDataString(values[1]);
+                    value = value.Replace('+', ' ');
                 }
+                parameters.Add(new KeyValuePair<string, string>(name, value));
             }
 
             string baseString = OAuthHelpers.GenerateBaseString(baseUri, method.ToString(), parameters);
@@ -73,13 +87,13 @@ namespace OAuth
             return sb.ToString();
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
         {
-            string header = GetAuthenticationHeaderForRequest(request.RequestUri, request.Method);
+            string header = await GetAuthenticationHeaderForRequest(request);
 
             request.Headers.Authorization = new AuthenticationHeaderValue(Constants.OAuthAuthenticationHeader, header);
 
-            return base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken);
         }
     }
 }
