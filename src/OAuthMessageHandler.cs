@@ -16,6 +16,7 @@ namespace OAuth
         private readonly string _authTokenSecret;
         private readonly IOAuthRandomnessProvider _provider;
 
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersionParameter versionParameter = OAuthVersionParameter.OneZeroA)
         public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
             this(apiKey, secret, authToken, authTokenSecret, new OAuthRandomnessProvider())
         {
@@ -43,6 +44,19 @@ namespace OAuth
             _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _provider.OAuthVersion());
 
             _keyBytes = OAuthHelpers.CreateHashKeyBytes(_secret, _authTokenSecret);
+            switch (versionParameter)
+            {
+                case OAuthVersionParameter.OneZeroA:
+                    _versionParameter = Constants.oauth_version_1a;
+                    break;
+                case OAuthVersionParameter.OneZero:
+                    _versionParameter = Constants.oauth_version_1;
+                    break;
+                case OAuthVersionParameter.Omit:
+                default:
+                    _versionParameter = string.Empty;
+                    break;
+            }
 
             this.InnerHandler = new HttpClientHandler();
         }
@@ -61,6 +75,11 @@ namespace OAuth
                 new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GenerateNonce()),
                 new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GenerateTimeStamp()),
             };
+
+            if (!string.IsNullOrEmpty(_versionParameter))
+            {
+                parameters.Add(new KeyValuePair<string, string>(Constants.oauth_version, _versionParameter));
+            }
 
             Uri requestUri = request.RequestUri;
             string baseUri = requestUri.OriginalString;
