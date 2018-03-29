@@ -49,7 +49,7 @@ namespace OAuth
                 queryString = requestUri.Query;
             }
 
-            if (request.Content.Headers.ContentType.MediaType == "application/x-www-form-urlencoded")
+            if (request.Content?.Headers.ContentType?.MediaType == "application/x-www-form-urlencoded")
             {
                 string requestContent = await request.Content.ReadAsStringAsync();
 
