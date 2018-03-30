@@ -18,6 +18,7 @@ namespace OAuth
         internal const string oauth_version = "oauth_version";
         internal const string oauth_callback = "oauth_callback";
         internal const string oauth_verifier = "oauth_verifier";
+        internal const string oauth_version_1 = "1.0";
         internal const string oauth_version_1a = "1.0a";
         internal const string OAuthAuthenticationHeader = "OAuth";
     }

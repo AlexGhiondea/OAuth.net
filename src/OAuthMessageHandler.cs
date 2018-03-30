@@ -13,13 +13,27 @@ namespace OAuth
         private readonly string _secret;
         private readonly string _authToken;
         private readonly string _authTokenSecret;
+        private readonly string _versionParameter;
 
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret)
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersionParameter versionParameter = OAuthVersionParameter.OneZeroA)
         {
             _apiKey = apiKey;
             _secret = secret;
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
+            switch (versionParameter)
+            {
+                case OAuthVersionParameter.OneZeroA:
+                    _versionParameter = Constants.oauth_version_1a;
+                    break;
+                case OAuthVersionParameter.OneZero:
+                    _versionParameter = Constants.oauth_version_1;
+                    break;
+                case OAuthVersionParameter.Omit:
+                default:
+                    _versionParameter = string.Empty;
+                    break;
+            }
 
             this.InnerHandler = new HttpClientHandler();
         }
@@ -35,9 +49,13 @@ namespace OAuth
                 new KeyValuePair<string,string>(Constants.oauth_nonce, OAuthHelpers.GenerateNonce() ),
                 new KeyValuePair<string,string>(Constants.oauth_timestamp, OAuthHelpers.GenerateTimestamp() ),
                 new KeyValuePair<string,string>(Constants.oauth_signature_method, "HMAC-SHA1"),
-                new KeyValuePair<string,string>(Constants.oauth_version, Constants.oauth_version_1a),
                 new KeyValuePair<string,string>(Constants.oauth_token, _authToken),
             };
+
+            if (!string.IsNullOrEmpty(_versionParameter))
+            {
+                parameters.Add(new KeyValuePair<string, string>(Constants.oauth_version, _versionParameter));
+            }
 
             string baseUri = requestUri.OriginalString;
 
