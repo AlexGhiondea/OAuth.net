@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAuth.net", "OAuth.Net\OAuth.net.csproj", "{91404BFC-06B9-4CE2-B403-F4B7EAF8E0CA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuth.Net.Tests", "OAuth.Net.Tests\OAuth.Net.Tests.csproj", "{FB7EC91E-6355-4D71-B97E-43378A249CA3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{91404BFC-06B9-4CE2-B403-F4B7EAF8E0CA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{91404BFC-06B9-4CE2-B403-F4B7EAF8E0CA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{91404BFC-06B9-4CE2-B403-F4B7EAF8E0CA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FB7EC91E-6355-4D71-B97E-43378A249CA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FB7EC91E-6355-4D71-B97E-43378A249CA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FB7EC91E-6355-4D71-B97E-43378A249CA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FB7EC91E-6355-4D71-B97E-43378A249CA3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
