@@ -38,7 +38,7 @@ namespace OAuth
             }
 
             string baseString = OAuthHelpers.GenerateBaseString(url, method, parameters);
-            string sig = OAuthHelpers.EncodeValue(OAuthHelpers.GenerateHMACDigest(baseString, _secret, tokSecret));
+            string sig = OAuthHelpers.EncodeValue(OAuthHelpers.GenerateHMACDigest(baseString, OAuthHelpers.CreateHashKeyBytes(_secret, tokSecret)));
 
             parameters.Add(new KeyValuePair<string, string>(Constants.oauth_signature, sig));
 

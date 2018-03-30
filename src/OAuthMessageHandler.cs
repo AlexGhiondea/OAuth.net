@@ -25,7 +25,10 @@ namespace OAuth
         private readonly KeyValuePair<string, string> _authTokenParam;
         private readonly KeyValuePair<string, string> _oauthVersionParam;
 
+        // the bytes used for the HMAC-SHA1
         public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, IOAuthRandomnessProvider provider)
+        private readonly byte[] _keyBytes; 
+
         {
             _apiKey = apiKey;
             _secret = secret;
@@ -37,6 +40,8 @@ namespace OAuth
             _authTokenParam = new KeyValuePair<string, string>(Constants.oauth_token, _authToken);
             // TODO: incorporate the other PR.
             _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, Constants.oauth_version_1a);
+
+            _keyBytes = OAuthHelpers.CreateHashKeyBytes(_secret, _authTokenSecret);
 
             this.InnerHandler = new HttpClientHandler();
         }
@@ -92,7 +97,7 @@ namespace OAuth
             }
 
             string baseString = OAuthHelpers.GenerateBaseString(baseUri, request.Method.ToString(), parameters);
-            string sig = OAuthHelpers.EncodeValue(OAuthHelpers.GenerateHMACDigest(baseString, _secret, _authTokenSecret));
+            string sig = OAuthHelpers.EncodeValue(OAuthHelpers.GenerateHMACDigest(baseString, _keyBytes));
 
             parameters.Add(new KeyValuePair<string, string>(Constants.oauth_signature, sig));
 

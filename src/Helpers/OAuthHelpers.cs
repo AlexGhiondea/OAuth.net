@@ -115,20 +115,26 @@ namespace OAuth.Helpers
             return Guid.NewGuid().ToString("N");
         }
 
+        public static byte[] CreateHashKeyBytes(string secret, string authTokenSecret)
+        {
+            string key = string.Format("{0}&{1}", OAuthHelpers.EncodeValue(secret), OAuthHelpers.EncodeValue(authTokenSecret));
+
+            //the key is the client secret+ "&" + token_secret
+            return Encoding.UTF8.GetBytes(key);
+        }
+
         /// <summary>
         /// Calculate the HMAC-SHA1 digest for the base string
         /// </summary>
-        public static string GenerateHMACDigest(string data, string clientSecret, string tokenSecret = "")
+        public static string GenerateHMACDigest(string data, byte[] key)
         {
-            HMACSHA1 hash = new HMACSHA1();
-            string key = string.Format("{0}&{1}", EncodeValue(clientSecret), EncodeValue(tokenSecret));
+            using (HMACSHA1 hash = new HMACSHA1())
+            {
+                hash.Key = key; // use the pre-computed key
+                byte[] digest = hash.ComputeHash(Encoding.UTF8.GetBytes(data));
 
-            //the key is the client secret+ "&" + token_secret
-            hash.Key = Encoding.UTF8.GetBytes(key);
-
-            byte[] digest = hash.ComputeHash(Encoding.UTF8.GetBytes(data));
-
-            return Convert.ToBase64String(digest);
+                return Convert.ToBase64String(digest);
+            }
         }
     }
 }
