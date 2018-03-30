@@ -82,18 +82,9 @@ namespace OAuth
                 queryString = $"{queryString}&{requestContent}";
             }
 
-            foreach (var param in queryString.Split(new char[] { '?', '&' }, StringSplitOptions.RemoveEmptyEntries))
+            if (!string.IsNullOrEmpty(queryString))
             {
-                var values = param.Split('=');
-                string name = Uri.UnescapeDataString(values[0]);
-                name = name.Replace('+', ' ');
-                string value = string.Empty;
-                if (values.Length > 1)
-                {
-                    value = Uri.UnescapeDataString(values[1]);
-                    value = value.Replace('+', ' ');
-                }
-                parameters.Add(new KeyValuePair<string, string>(name, value));
+                ParseParameters(parameters, queryString);
             }
 
             string baseString = OAuthHelpers.GenerateBaseString(baseUri, request.Method.ToString(), parameters);
@@ -113,12 +104,58 @@ namespace OAuth
             return sb.ToString();
         }
 
+        private void ParseParameters(SortedSet<KeyValuePair<string, string>> parameters, string queryString)
+        {
+            int previousPosition = 0; // beginning of the string
+
+            queryString = Uri.UnescapeDataString(queryString);
+            queryString = queryString.Replace('+', ' ');
+            for (int outerIndex = 0; outerIndex <= queryString.Length; outerIndex++)
+            {
+                // we are going to try to parse parameters when we see a '&' or when we reach the end of the string.
+                if (outerIndex == queryString.Length || queryString[outerIndex] == '&')
+                {
+                    // we are going to iterate on the current segment
+                    int equalsPos = -1;
+                    int segmentLength = outerIndex - previousPosition - 1;
+                    string name = string.Empty, value = string.Empty;
+                    for (int i = previousPosition + 1; i < previousPosition + segmentLength; i++)
+                    {
+                        // if we haven't found the equals yet, nothing to do.
+                        if (queryString[i] != '=')
+                            continue;
+
+                        equalsPos = i;
+
+                        int nameLength = i - 1 - previousPosition;
+                        // up to this point, we have the name of the parameter.
+                        name = queryString.Substring(previousPosition + 1, nameLength);
+                        //name = name.Replace('+', ' ');
+                        //ReplaceInPlace(name, '+', ' ');
+                        break;
+                    }
+
+                    if (equalsPos != -1)
+                    {
+                        // the length of the value is from the equals to the end of the segment.
+                        int valueLength = segmentLength - (equalsPos - previousPosition);
+                        value = queryString.Substring(equalsPos + 1, valueLength);
+                        //value = value.Replace('+', ' ');
+                        //ReplaceInPlace(value, '+', ' ');
+                    }
+
+                    parameters.Add(new KeyValuePair<string, string>(name, value));
+
+                    //    // update the position of the last & or ? that we saw.
+                    previousPosition = outerIndex;
+                }
+            }
+        }
+
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, System.Threading.CancellationToken cancellationToken)
         {
             string header = await GetAuthenticationHeaderForRequest(request);
-
             request.Headers.Authorization = new AuthenticationHeaderValue(Constants.OAuthAuthenticationHeader, header);
-
             return await base.SendAsync(request, cancellationToken);
         }
     }
