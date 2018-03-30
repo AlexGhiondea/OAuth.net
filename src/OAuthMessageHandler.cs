@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OAuth.Helpers;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -32,8 +33,8 @@ namespace OAuth
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>()
             {
                 new KeyValuePair<string,string>(Constants.oauth_consumer_key, _apiKey),
-                new KeyValuePair<string,string>(Constants.oauth_nonce, OAuthHelpers.GenerateNonce() ),
-                new KeyValuePair<string,string>(Constants.oauth_timestamp, OAuthHelpers.GenerateTimestamp() ),
+                new KeyValuePair<string,string>(Constants.oauth_nonce, OAuthHelpers.GenerateNonce()),
+                new KeyValuePair<string,string>(Constants.oauth_timestamp, OAuthHelpers.GenerateTimestamp()),
                 new KeyValuePair<string,string>(Constants.oauth_signature_method, "HMAC-SHA1"),
                 new KeyValuePair<string,string>(Constants.oauth_version, Constants.oauth_version_1a),
                 new KeyValuePair<string,string>(Constants.oauth_token, _authToken),
