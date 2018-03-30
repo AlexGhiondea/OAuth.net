@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace OAuth
 {
-    public class OAuthParameterComparer : IComparer<KeyValuePair<string, string>>
+    internal class OAuthParameterComparer : IComparer<KeyValuePair<string, string>>
     {
         public int Compare(KeyValuePair<string, string> param1, KeyValuePair<string, string> param2)
         {

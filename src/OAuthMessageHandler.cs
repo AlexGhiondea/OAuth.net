@@ -46,7 +46,7 @@ namespace OAuth
             this.InnerHandler = new HttpClientHandler();
         }
 
-        public async Task<string> GetAuthenticationHeaderForRequest(HttpRequestMessage request)
+        private async Task<string> GetAuthenticationHeaderForRequest(HttpRequestMessage request)
         {
             SortedSet<KeyValuePair<string, string>> parameters = new SortedSet<KeyValuePair<string, string>>(new OAuthParameterComparer())
             {
