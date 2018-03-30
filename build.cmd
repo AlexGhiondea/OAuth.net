@@ -2,9 +2,9 @@
 setlocal
 
 set _projectName=OAuth.net
-set _solution=src\%_projectName%.sln
-set _codeProject=src\%_projectName%\%_projectName%.csproj
-set _testProject=src\%_projectName%.tests\%_projectName%.tests.csproj
+set _solution=%_projectName%.sln
+set _codeProject=src\%_projectName%.csproj
+set _testProject=test\%_projectName%.tests.csproj
 
 set _config=%1
 if not defined _config (

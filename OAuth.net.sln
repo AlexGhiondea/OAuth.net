@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27130.2010
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAuth.net", "OAuth.Net\OAuth.net.csproj", "{91404BFC-06B9-4CE2-B403-F4B7EAF8E0CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OAuth.net", "src\OAuth.net.csproj", "{91404BFC-06B9-4CE2-B403-F4B7EAF8E0CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuth.Net.Tests", "OAuth.Net.Tests\OAuth.Net.Tests.csproj", "{FB7EC91E-6355-4D71-B97E-43378A249CA3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OAuth.Net.Tests", "test\OAuth.Net.Tests.csproj", "{FB7EC91E-6355-4D71-B97E-43378A249CA3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
