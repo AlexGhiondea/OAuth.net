@@ -15,38 +15,12 @@ namespace OAuth.Helpers
         /// - Sort the parameters lexicografically
         /// - Concatenate them into a query string
         /// </summary>
-        public static string NormalizeParameters(List<KeyValuePair<string, string>> parameters)
+        public static string NormalizeParameters(SortedSet<KeyValuePair<string, string>> parameters)
         {
-            // create the encoded list of parameters.
-            List<KeyValuePair<string, string>> encodedParameters = new List<KeyValuePair<string, string>>();
-            foreach (var pair in parameters)
-            {
-                // The key/value should be Encoded.
-                // This does mean that we will encode this twice but this is according to the way SmugMug 
-                // and oAuth works.
-                KeyValuePair<string, string> newPair = new KeyValuePair<string, string>(
-                    EncodeValue(pair.Key),
-                    EncodeValue(pair.Value)
-                );
-                encodedParameters.Add(newPair);
-            }
-
-            encodedParameters.Sort(new Comparison<KeyValuePair<string, string>>((param1, param2) =>
-            {
-                if (param1.Key == param2.Key)
-                {
-                    return string.Compare(param1.Value, param2.Value, StringComparison.Ordinal);
-                }
-                else
-                {
-                    return string.Compare(param1.Key, param2.Key, StringComparison.Ordinal);
-                }
-            }));
-
             StringBuilder normalizedParameters = new StringBuilder();
-            foreach (var param in encodedParameters)
+            foreach (var param in parameters)
             {
-                normalizedParameters.AppendFormat("{0}={1}&", param.Key, param.Value);
+                normalizedParameters.AppendFormat("{0}={1}&", EncodeValue(param.Key), EncodeValue(param.Value));
             }
             normalizedParameters.Remove(normalizedParameters.Length - 1, 1);
 
@@ -97,7 +71,7 @@ namespace OAuth.Helpers
         /// <summary>
         /// Generates the base string for the oAuth request
         /// </summary>
-        public static string GenerateBaseString(string host, string httpMethod, List<KeyValuePair<string, string>> parameters)
+        public static string GenerateBaseString(string host, string httpMethod, SortedSet<KeyValuePair<string, string>> parameters)
         {
             httpMethod = httpMethod.ToUpperInvariant();
             host = EncodeValue(GenerateBaseStringUri(host));

@@ -20,6 +20,10 @@ namespace OAuth
             this(apiKey, secret, authToken, authTokenSecret, new OAuthRandomnessProvider())
         {
         }
+        private readonly KeyValuePair<string, string> _hmacSha1Param;
+        private readonly KeyValuePair<string, string> _apiKeyParam;
+        private readonly KeyValuePair<string, string> _authTokenParam;
+        private readonly KeyValuePair<string, string> _oauthVersionParam;
 
         public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, IOAuthRandomnessProvider provider)
         {
@@ -28,25 +32,33 @@ namespace OAuth
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
             _provider = provider;
+            _hmacSha1Param = new KeyValuePair<string, string>(Constants.oauth_signature_method, "HMAC-SHA1");
+            _apiKeyParam = new KeyValuePair<string, string>(Constants.oauth_consumer_key, _apiKey);
+            _authTokenParam = new KeyValuePair<string, string>(Constants.oauth_token, _authToken);
+            // TODO: incorporate the other PR.
+            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, Constants.oauth_version_1a);
 
             this.InnerHandler = new HttpClientHandler();
         }
 
-        private async Task<string> GetAuthenticationHeaderForRequest(HttpRequestMessage request)
+        public async Task<string> GetAuthenticationHeaderForRequest(HttpRequestMessage request)
         {
-            Uri requestUri = request.RequestUri;
-            HttpMethod method = request.Method;
-
-            List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>()
+            SortedSet<KeyValuePair<string, string>> parameters = new SortedSet<KeyValuePair<string, string>>(new OAuthParameterComparer())
             {
-                new KeyValuePair<string,string>(Constants.oauth_consumer_key, _apiKey),
+                // Re-use the parameters that don't change
                 new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GenerateNonce()),
                 new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GenerateTimeStamp()),
-                new KeyValuePair<string,string>(Constants.oauth_signature_method, "HMAC-SHA1"),
-                new KeyValuePair<string,string>(Constants.oauth_version, Constants.oauth_version_1a),
-                new KeyValuePair<string,string>(Constants.oauth_token, _authToken),
+                _apiKeyParam,
+                _hmacSha1Param,
+                _authTokenParam,
+                _oauthVersionParam,
+
+                // Add the parameters that are unique for each call
+                new KeyValuePair<string, string>(Constants.oauth_nonce, OAuthHelpers.GenerateNonce()),
+                new KeyValuePair<string, string>(Constants.oauth_timestamp, OAuthHelpers.GenerateTimestamp()),
             };
 
+            Uri requestUri = request.RequestUri;
             string baseUri = requestUri.OriginalString;
 
             // We need to handle the case where the request comes with query parameters, in URL or in body
@@ -57,6 +69,7 @@ namespace OAuth
                 queryString = requestUri.Query;
             }
 
+            // concatenate the content, if we need to.
             if (request.Content?.Headers.ContentType?.MediaType == "application/x-www-form-urlencoded")
             {
                 string requestContent = await request.Content.ReadAsStringAsync();
@@ -78,7 +91,7 @@ namespace OAuth
                 parameters.Add(new KeyValuePair<string, string>(name, value));
             }
 
-            string baseString = OAuthHelpers.GenerateBaseString(baseUri, method.ToString(), parameters);
+            string baseString = OAuthHelpers.GenerateBaseString(baseUri, request.Method.ToString(), parameters);
             string sig = OAuthHelpers.EncodeValue(OAuthHelpers.GenerateHMACDigest(baseString, _secret, _authTokenSecret));
 
             parameters.Add(new KeyValuePair<string, string>(Constants.oauth_signature, sig));
