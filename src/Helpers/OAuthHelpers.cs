@@ -7,6 +7,9 @@ namespace OAuth.Helpers
 {
     public static class OAuthHelpers
     {
+        // Use a static for this well known date time, no need to re-create it every time.
+        static readonly DateTime s_Jan1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
         /// <summary>
         /// Normalizes the parameters according to the oAuth spec:
         /// - Sort the parameters lexicografically
@@ -108,9 +111,7 @@ namespace OAuth.Helpers
         /// </summary>
         public static string GenerateTimestamp()
         {
-            DateTime jan1970 = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
-
-            TimeSpan ts = DateTime.Now.ToUniversalTime() - jan1970;
+            TimeSpan ts = DateTime.Now.ToUniversalTime() - s_Jan1970;
             return ((long)ts.TotalSeconds).ToString();
         }
 
