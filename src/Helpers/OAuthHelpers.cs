@@ -39,6 +39,24 @@ namespace OAuth.Helpers
             // unreserved  = ALPHA / DIGIT / "-" / "." / "_" / "~"
             string acceptedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._~";
 
+            // do a pass, if we don't have to change the encoding, just return the string as-is, no need to allocate a new string.
+            bool shouldEncode = false;
+            for (int i = 0; i < value.Length; i++)
+            {
+                // allowed characters
+                char ch = value[i];
+                if (!((ch >= 'a' && ch <= 'z') ||
+                    (ch >= 'A' && ch <= 'Z') ||
+                    (ch >= '0' && ch <= '9') ||
+                    (ch == '-') || ch == '.' || ch == '_' || ch == '~'))
+                {
+                    shouldEncode = true;
+                }
+            }
+
+            if (!shouldEncode)
+                return value;
+
             StringBuilder encodedValue = new StringBuilder();
             for (int i = 0; i < value.Length; i++)
             {
