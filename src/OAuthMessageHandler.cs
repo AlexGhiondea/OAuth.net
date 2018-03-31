@@ -22,13 +22,13 @@ namespace OAuth
         // the bytes used for the HMAC-SHA1
         private readonly byte[] _keyBytes;
 
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersion oauthVersion) :
-            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(oauthVersion))
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
+            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(OAuthVersion.OneZeroA))
         {
         }
 
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
-            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(OAuthVersion.OneZeroA))
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersion oauthVersion):
+            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(oauthVersion))
         {
         }
 
