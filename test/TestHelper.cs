@@ -27,9 +27,9 @@ namespace OAuth.Net.Tests
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public string ComputeOAuthSignature(HttpRequestMessage request, string nonce, string timestamp)
+        public string ComputeOAuthSignature(HttpRequestMessage request, string nonce, string timestamp, string oauthVersion="1.0a")
         {
-            OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp));
+            OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp, oauthVersion));
 
             // get access to the method.
 

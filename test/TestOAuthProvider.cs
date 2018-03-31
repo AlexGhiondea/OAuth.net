@@ -8,10 +8,12 @@ namespace OAuth.Net.Tests
     {
         string _nonce;
         string _timestamp;
-        public TestOAuthProvider(string nonce, string timestamp)
+        string _oauthVersion;
+        public TestOAuthProvider(string nonce, string timestamp, string version="1.0a")
         {
             _nonce = nonce;
-            _timestamp = timestamp; 
+            _timestamp = timestamp;
+            _oauthVersion = version;
         }
 
         public string GenerateNonce()
@@ -22,6 +24,11 @@ namespace OAuth.Net.Tests
         public string GenerateTimeStamp()
         {
             return _timestamp;
+        }
+
+        public string OAuthVersion()
+        {
+            return _oauthVersion;
         }
     }
 }

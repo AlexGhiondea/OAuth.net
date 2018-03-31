@@ -91,5 +91,18 @@ namespace OAuth.Net.Tests
             Assert.Equal("0eQCtR89OhlUPIBqku8PobHIFQA%3D", result);
         }
 
+        [Fact]
+        public void ValidateSignaturePerSpecExample()
+        {
+            TestHelper th = new TestHelper("dpf43f3p2l4k3l03", "kd94hf93k423kf44", "nnch734d00sl2jdk", "pfkkdhi9sl3r4s00");
+            var result = th.ComputeOAuthSignature(
+                new HttpRequestMessage(
+                    HttpMethod.Get, 
+                    "http://photos.example.net/photos?file=vacation.jpg&size=original"),
+                "kllo9940pd9333jh", 
+                "1191242096",
+                "1.0"); // the spec example uses 1.0 as the OAuth version.
+            Assert.Equal("tR3%2BTy81lMeYAr%2FFid0kMTYa%2FWM%3D", result);
+        }
     }
 }

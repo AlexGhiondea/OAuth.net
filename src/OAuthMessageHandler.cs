@@ -40,7 +40,7 @@ namespace OAuth
             _apiKeyParam = new KeyValuePair<string, string>(Constants.oauth_consumer_key, _apiKey);
             _authTokenParam = new KeyValuePair<string, string>(Constants.oauth_token, _authToken);
             // TODO: incorporate the other PR.
-            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, Constants.oauth_version_1a);
+            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _provider.OAuthVersion());
 
             _keyBytes = OAuthHelpers.CreateHashKeyBytes(_secret, _authTokenSecret);
 
