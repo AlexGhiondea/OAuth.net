@@ -27,7 +27,7 @@ namespace OAuth.Net.Tests
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public string ComputeOAuthHeader(HttpRequestMessage request, string nonce, string timestamp)
+        public string ComputeOAuthSignature(HttpRequestMessage request, string nonce, string timestamp)
         {
             OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp));
 
@@ -42,7 +42,17 @@ namespace OAuth.Net.Tests
             Task<string> taskResult= getAuthHeaderMethod.Invoke(msgHandler, new object[] { request }) as Task<string>;
             string headerString = taskResult.Result;
 
-            return headerString;
+            // extract the oauth signature
+            string[] elems = headerString.Split(',');
+            foreach (var item in elems)
+            {
+                if (item.StartsWith("oauth_signature"))
+                {
+                    return item.Split('=')[1];
+                }
+            }
+
+            return null;
         }
     }
 }
