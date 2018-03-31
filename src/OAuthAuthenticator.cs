@@ -15,25 +15,18 @@ namespace OAuth
     {
         private readonly string _apiKey;
         private readonly string _secret;
-        private readonly string _versionParameter;
+        private readonly string _oauthVersion;
 
-        public OAuthAuthenticator(string apiKey, string secret, OAuthVersionParameter versionParameter = OAuthVersionParameter.OneZeroA)
+        public OAuthAuthenticator(string apiKey, string secret)
+            :this(apiKey, secret, OAuthVersion.OneZeroA)
+        {
+
+        }
+        public OAuthAuthenticator(string apiKey, string secret, OAuthVersion oauthVersion)
         {
             _apiKey = apiKey;
             _secret = secret;
-            switch (versionParameter)
-            {
-                case OAuthVersionParameter.OneZeroA:
-                    _versionParameter = Constants.oauth_version_1a;
-                    break;
-                case OAuthVersionParameter.OneZero:
-                    _versionParameter = Constants.oauth_version_1;
-                    break;
-                case OAuthVersionParameter.Omit:
-                default:
-                    _versionParameter = string.Empty;
-                    break;
-            }
+            _oauthVersion = OAuthHelpers.GetOAuthVersionAsString(oauthVersion);
         }
 
         private string CreateRequest(string url, string method, string tokSecret, params object[] args)
@@ -46,9 +39,9 @@ namespace OAuth
                 new KeyValuePair<string,string>(Constants.oauth_signature_method, "HMAC-SHA1"),
             };
 
-            if (!string.IsNullOrEmpty(_versionParameter))
+            if (!string.IsNullOrEmpty(_oauthVersion))
             {
-                parameters.Add(new KeyValuePair<string, string>(Constants.oauth_version, _versionParameter));
+                parameters.Add(new KeyValuePair<string, string>(Constants.oauth_version, _oauthVersion));
             }
 
             for (int i = 0; i < args.Length; i += 2)

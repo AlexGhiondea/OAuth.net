@@ -14,22 +14,25 @@ namespace OAuth
         private readonly string _secret;
         private readonly string _authToken;
         private readonly string _authTokenSecret;
-        private readonly IOAuthRandomnessProvider _provider;
-
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersionParameter versionParameter = OAuthVersionParameter.OneZeroA)
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
-            this(apiKey, secret, authToken, authTokenSecret, new OAuthRandomnessProvider())
-        {
-        }
+        private readonly IOAuthSignatureData _provider;
         private readonly KeyValuePair<string, string> _hmacSha1Param;
         private readonly KeyValuePair<string, string> _apiKeyParam;
         private readonly KeyValuePair<string, string> _authTokenParam;
         private readonly KeyValuePair<string, string> _oauthVersionParam;
-
         // the bytes used for the HMAC-SHA1
         private readonly byte[] _keyBytes;
 
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, IOAuthRandomnessProvider provider)
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersion oauthVersion):
+            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(oauthVersion))
+        {
+        }
+
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
+            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(OAuthVersion.OneZeroA))
+        {
+        }
+
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, IOAuthSignatureData provider)
         {
             _apiKey = apiKey;
             _secret = secret;
@@ -40,23 +43,8 @@ namespace OAuth
             _hmacSha1Param = new KeyValuePair<string, string>(Constants.oauth_signature_method, "HMAC-SHA1");
             _apiKeyParam = new KeyValuePair<string, string>(Constants.oauth_consumer_key, _apiKey);
             _authTokenParam = new KeyValuePair<string, string>(Constants.oauth_token, _authToken);
-            // TODO: incorporate the other PR.
-            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _provider.OAuthVersion());
-
+            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _provider.GetOAuthVersion());
             _keyBytes = OAuthHelpers.CreateHashKeyBytes(_secret, _authTokenSecret);
-            switch (versionParameter)
-            {
-                case OAuthVersionParameter.OneZeroA:
-                    _versionParameter = Constants.oauth_version_1a;
-                    break;
-                case OAuthVersionParameter.OneZero:
-                    _versionParameter = Constants.oauth_version_1;
-                    break;
-                case OAuthVersionParameter.Omit:
-                default:
-                    _versionParameter = string.Empty;
-                    break;
-            }
 
             this.InnerHandler = new HttpClientHandler();
         }
@@ -69,16 +57,16 @@ namespace OAuth
                 _apiKeyParam,
                 _hmacSha1Param,
                 _authTokenParam,
-                _oauthVersionParam,
 
                 // Add the parameters that are unique for each call
-                new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GenerateNonce()),
-                new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GenerateTimeStamp()),
+                new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GetNonce()),
+                new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GetTimeStamp()),
             };
 
-            if (!string.IsNullOrEmpty(_versionParameter))
+            // if we have specified the OAuthVersion, add it!
+            if (!string.IsNullOrEmpty(_oauthVersionParam.Value))
             {
-                parameters.Add(new KeyValuePair<string, string>(Constants.oauth_version, _versionParameter));
+                parameters.Add(_oauthVersionParam);
             }
 
             Uri requestUri = request.RequestUri;

@@ -27,6 +27,15 @@ namespace OAuth.Helpers
             return normalizedParameters.ToString();
         }
 
+        public static string GetOAuthVersionAsString(OAuthVersion version)
+        {
+            return version == OAuthVersion.OneZeroA ? // is it 1.0a?
+                        Constants.oauth_version_1a :
+                        version == OAuthVersion.OneZero ? // is it 1.0?
+                            Constants.oauth_version_1 :
+                            string.Empty; // not specified.
+        }
+
         /// <summary>
         /// Encodes the value in the manner required by the oAuth
         /// All values not permitted are encoded as % followed by
