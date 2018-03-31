@@ -27,9 +27,9 @@ namespace OAuth.Net.Tests
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public string ComputeOAuthHeader(HttpRequestMessage request)
+        public string ComputeOAuthHeader(HttpRequestMessage request, string nonce, string timestamp)
         {
-            OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret);
+            OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp));
 
             // get access to the method.
 
