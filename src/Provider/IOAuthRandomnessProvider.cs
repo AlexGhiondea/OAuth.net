@@ -4,5 +4,6 @@
     {
         string GenerateNonce();
         string GenerateTimeStamp();
+        string OAuthVersion();
     }
 }

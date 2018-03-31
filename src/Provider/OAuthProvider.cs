@@ -11,5 +11,10 @@
         {
             return OAuth.Helpers.OAuthHelpers.GenerateTimestamp();
         }
+
+        public string OAuthVersion()
+        {
+            return OAuth.Constants.oauth_version_1a;
+        }
     }
 }
