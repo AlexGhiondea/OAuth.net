@@ -23,7 +23,7 @@ namespace OAuth
 
         private string CreateRequest(string url, string method, string tokSecret, params object[] args)
         {
-            List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>()
+            SortedSet<KeyValuePair<string, string>> parameters = new SortedSet<KeyValuePair<string, string>>(new OAuthParameterComparer())
             {
                 new KeyValuePair<string,string>(Constants.oauth_consumer_key, _apiKey),
                 new KeyValuePair<string,string>(Constants.oauth_nonce, OAuthHelpers.GenerateNonce() ),
@@ -38,7 +38,7 @@ namespace OAuth
             }
 
             string baseString = OAuthHelpers.GenerateBaseString(url, method, parameters);
-            string sig = OAuthHelpers.EncodeValue(OAuthHelpers.GenerateHMACDigest(baseString, _secret, tokSecret));
+            string sig = OAuthHelpers.EncodeValue(OAuthHelpers.GenerateHMACDigest(baseString, OAuthHelpers.CreateHashKeyBytes(_secret, tokSecret)));
 
             parameters.Add(new KeyValuePair<string, string>(Constants.oauth_signature, sig));
 
