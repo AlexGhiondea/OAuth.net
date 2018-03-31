@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace OAuth
+namespace OAuth.Helpers
 {
-
     public static class OAuthHelpers
     {
         /// <summary>
