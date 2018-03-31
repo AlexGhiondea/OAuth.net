@@ -26,15 +26,16 @@ namespace OAuth
         private readonly KeyValuePair<string, string> _oauthVersionParam;
 
         // the bytes used for the HMAC-SHA1
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, IOAuthRandomnessProvider provider)
-        private readonly byte[] _keyBytes; 
+        private readonly byte[] _keyBytes;
 
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, IOAuthRandomnessProvider provider)
         {
             _apiKey = apiKey;
             _secret = secret;
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
             _provider = provider;
+
             _hmacSha1Param = new KeyValuePair<string, string>(Constants.oauth_signature_method, "HMAC-SHA1");
             _apiKeyParam = new KeyValuePair<string, string>(Constants.oauth_consumer_key, _apiKey);
             _authTokenParam = new KeyValuePair<string, string>(Constants.oauth_token, _authToken);
@@ -51,16 +52,14 @@ namespace OAuth
             SortedSet<KeyValuePair<string, string>> parameters = new SortedSet<KeyValuePair<string, string>>(new OAuthParameterComparer())
             {
                 // Re-use the parameters that don't change
-                new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GenerateNonce()),
-                new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GenerateTimeStamp()),
                 _apiKeyParam,
                 _hmacSha1Param,
                 _authTokenParam,
                 _oauthVersionParam,
 
                 // Add the parameters that are unique for each call
-                new KeyValuePair<string, string>(Constants.oauth_nonce, OAuthHelpers.GenerateNonce()),
-                new KeyValuePair<string, string>(Constants.oauth_timestamp, OAuthHelpers.GenerateTimestamp()),
+                new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GenerateNonce()),
+                new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GenerateTimeStamp()),
             };
 
             Uri requestUri = request.RequestUri;
@@ -130,18 +129,19 @@ namespace OAuth
                         int nameLength = i - 1 - previousPosition;
                         // up to this point, we have the name of the parameter.
                         name = queryString.Substring(previousPosition + 1, nameLength);
-                        //name = name.Replace('+', ' ');
-                        //ReplaceInPlace(name, '+', ' ');
                         break;
                     }
 
-                    if (equalsPos != -1)
+                    // if we don't have a value, just a parameter
+                    if (equalsPos == -1)
+                    {
+                        name = queryString.Substring(previousPosition + 1, segmentLength);
+                    }
+                    else 
                     {
                         // the length of the value is from the equals to the end of the segment.
                         int valueLength = segmentLength - (equalsPos - previousPosition);
                         value = queryString.Substring(equalsPos + 1, valueLength);
-                        //value = value.Replace('+', ' ');
-                        //ReplaceInPlace(value, '+', ' ');
                     }
 
                     parameters.Add(new KeyValuePair<string, string>(name, value));
