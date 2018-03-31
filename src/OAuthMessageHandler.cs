@@ -14,13 +14,20 @@ namespace OAuth
         private readonly string _secret;
         private readonly string _authToken;
         private readonly string _authTokenSecret;
+        private readonly IOAuthRandomnessProvider _provider;
 
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret)
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
+            this(apiKey, secret, authToken, authTokenSecret, new OAuthRandomnessProvider())
+        {
+        }
+
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, IOAuthRandomnessProvider provider)
         {
             _apiKey = apiKey;
             _secret = secret;
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
+            _provider = provider;
 
             this.InnerHandler = new HttpClientHandler();
         }
@@ -33,8 +40,8 @@ namespace OAuth
             List<KeyValuePair<string, string>> parameters = new List<KeyValuePair<string, string>>()
             {
                 new KeyValuePair<string,string>(Constants.oauth_consumer_key, _apiKey),
-                new KeyValuePair<string,string>(Constants.oauth_nonce, OAuthHelpers.GenerateNonce()),
-                new KeyValuePair<string,string>(Constants.oauth_timestamp, OAuthHelpers.GenerateTimestamp()),
+                new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GenerateNonce()),
+                new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GenerateTimeStamp()),
                 new KeyValuePair<string,string>(Constants.oauth_signature_method, "HMAC-SHA1"),
                 new KeyValuePair<string,string>(Constants.oauth_version, Constants.oauth_version_1a),
                 new KeyValuePair<string,string>(Constants.oauth_token, _authToken),
