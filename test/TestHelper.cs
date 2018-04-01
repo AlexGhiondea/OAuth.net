@@ -20,8 +20,6 @@ namespace OAuth.Net.Tests
             _secret = secret;
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
-
-            //            OAuth.IOAuthSignatureData
         }
 
         /// <summary>
@@ -34,7 +32,6 @@ namespace OAuth.Net.Tests
             OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp, version ));
 
             // get access to the method.
-
             MethodInfo getAuthHeaderMethod = msgHandler.GetType().GetMethod("GetAuthenticationHeaderForRequest",
                 System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance,
                 null,
