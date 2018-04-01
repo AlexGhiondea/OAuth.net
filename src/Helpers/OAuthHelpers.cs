@@ -27,6 +27,9 @@ namespace OAuth.Helpers
             return normalizedParameters.ToString();
         }
 
+        /// <summary>
+        /// Converts an OAuthVersion enum to a string representation.
+        /// </summary>
         public static string GetOAuthVersionAsString(OAuthVersion version)
         {
             return version == OAuthVersion.OneZeroA ? // is it 1.0a?

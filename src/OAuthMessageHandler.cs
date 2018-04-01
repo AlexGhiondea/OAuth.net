@@ -1,4 +1,5 @@
 ﻿using OAuth.Helpers;
+using OAuth.Signature;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -14,7 +15,7 @@ namespace OAuth
         private readonly string _secret;
         private readonly string _authToken;
         private readonly string _authTokenSecret;
-        private readonly IOAuthSignatureData _provider;
+        private readonly IOAuthSignatureData _signatureDataProvider;
         private readonly KeyValuePair<string, string> _hmacSha1Param;
         private readonly KeyValuePair<string, string> _apiKeyParam;
         private readonly KeyValuePair<string, string> _authTokenParam;
@@ -38,12 +39,12 @@ namespace OAuth
             _secret = secret;
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
-            _provider = provider;
+            _signatureDataProvider = provider;
 
             _hmacSha1Param = new KeyValuePair<string, string>(Constants.oauth_signature_method, "HMAC-SHA1");
             _apiKeyParam = new KeyValuePair<string, string>(Constants.oauth_consumer_key, _apiKey);
             _authTokenParam = new KeyValuePair<string, string>(Constants.oauth_token, _authToken);
-            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _provider.GetOAuthVersion());
+            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _signatureDataProvider.GetOAuthVersion());
             _keyBytes = OAuthHelpers.CreateHashKeyBytes(_secret, _authTokenSecret);
 
             this.InnerHandler = new HttpClientHandler();
@@ -59,8 +60,8 @@ namespace OAuth
                 _authTokenParam,
 
                 // Add the parameters that are unique for each call
-                new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GetNonce()),
-                new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GetTimeStamp()),
+                new KeyValuePair<string,string>(Constants.oauth_nonce, _signatureDataProvider.GetNonce()),
+                new KeyValuePair<string,string>(Constants.oauth_timestamp, _signatureDataProvider.GetTimeStamp()),
             };
 
             // if we have specified the OAuthVersion, add it!

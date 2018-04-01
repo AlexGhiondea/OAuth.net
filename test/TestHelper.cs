@@ -20,6 +20,8 @@ namespace OAuth.Net.Tests
             _secret = secret;
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
+
+            //            OAuth.IOAuthSignatureData
         }
 
         /// <summary>
@@ -27,9 +29,9 @@ namespace OAuth.Net.Tests
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public string ComputeOAuthSignature(HttpRequestMessage request, string nonce, string timestamp, string oauthVersion="1.0a")
+        public string ComputeOAuthSignature(HttpRequestMessage request, string nonce, string timestamp, OAuthVersion version = OAuthVersion.OneZeroA)
         {
-            OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp, oauthVersion));
+            OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp, version ));
 
             // get access to the method.
 
@@ -39,7 +41,7 @@ namespace OAuth.Net.Tests
                 new Type[] { typeof(HttpRequestMessage) },
                 null);
 
-            Task<string> taskResult= getAuthHeaderMethod.Invoke(msgHandler, new object[] { request }) as Task<string>;
+            Task<string> taskResult = getAuthHeaderMethod.Invoke(msgHandler, new object[] { request }) as Task<string>;
             string headerString = taskResult.Result;
 
             // extract the oauth signature

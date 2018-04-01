@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OAuth.Signature;
+using System;
 using System.Collections.Generic;
 using System.Text;
 
@@ -9,11 +10,11 @@ namespace OAuth.Net.Tests
         string _nonce;
         string _timestamp;
         string _oauthVersion;
-        public TestOAuthProvider(string nonce, string timestamp, string version = "1.0a")
+        public TestOAuthProvider(string nonce, string timestamp, OAuthVersion version)
         {
             _nonce = nonce;
             _timestamp = timestamp;
-            _oauthVersion = version;
+            _oauthVersion = OAuth.Helpers.OAuthHelpers.GetOAuthVersionAsString(version);
         }
 
         public string GetNonce() => _nonce;

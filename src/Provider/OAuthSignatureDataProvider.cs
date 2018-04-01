@@ -1,4 +1,6 @@
-﻿namespace OAuth
+﻿using OAuth.Signature;
+
+namespace OAuth
 {
     internal class OAuthSignatureDataProvider : IOAuthSignatureData
     {
