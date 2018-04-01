@@ -162,7 +162,45 @@ namespace OAuth.Net.Tests
                 OAuthVersion.OneZeroA);
             Assert.Equal("0eQCtR89OhlUPIBqku8PobHIFQA%3D", result);
         }
+        [Fact]
+        public void ValidateSignature13()
+        {
+            TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
+            var request = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "https://www.foo.com/");
 
+            request.Content = new StringContent(
+                "param1=value1&param2&param3&altParam=$34",
+                System.Text.Encoding.ASCII,
+                "application/x-www-form-urlencoded");
+
+            var result = th.ComputeOAuthSignature(
+                request,
+                "a3d765e9e945436ea84b12273b136177",
+                "1522478039",
+                OAuthVersion.OneZeroA);
+            Assert.Equal("vNBSSnUXEIw9NUEZay9%2FzgFlw10%3D", result);
+        }
+        [Fact]
+        public void ValidateSignature14()
+        {
+            TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
+            var request = new HttpRequestMessage(
+                    HttpMethod.Get,
+                    "https://www.foo.com/?param1=value");
+
+            request.Content = new StringContent(
+                "param2&param3&altParam=$34",
+                System.Text.Encoding.ASCII,
+                "application/x-www-form-urlencoded");
+
+            var result = th.ComputeOAuthSignature(
+                request,
+                "0f6093ebbee04aa4a9cf6c7e3a095702",
+                "1522479777",
+                OAuthVersion.OneZeroA);
+        }
         [Fact]
         public void ValidateSignaturePerSpecExample()
         {
