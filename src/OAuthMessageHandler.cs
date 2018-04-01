@@ -22,7 +22,7 @@ namespace OAuth
         // the bytes used for the HMAC-SHA1
         private readonly byte[] _keyBytes;
 
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersion oauthVersion):
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersion oauthVersion) :
             this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(oauthVersion))
         {
         }
@@ -80,8 +80,8 @@ namespace OAuth
                 queryString = requestUri.Query;
             }
 
-            // concatenate the content, if we need to.
-            if (request.Content?.Headers.ContentType?.MediaType == "application/x-www-form-urlencoded")
+            // concatenate the content with the request content if the media type says we should.
+            if (StringComparer.OrdinalIgnoreCase.Equals(request.Content?.Headers.ContentType?.MediaType, Constants.ContentType))
             {
                 string requestContent = await request.Content.ReadAsStringAsync();
 
@@ -144,7 +144,7 @@ namespace OAuth
                     {
                         name = queryString.Substring(previousPosition + 1, segmentLength);
                     }
-                    else 
+                    else
                     {
                         // the length of the value is from the equals to the end of the segment.
                         int valueLength = segmentLength - (equalsPos - previousPosition);
