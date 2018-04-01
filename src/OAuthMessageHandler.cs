@@ -1,4 +1,5 @@
 ﻿using OAuth.Helpers;
+using OAuth.Signature;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -14,7 +15,7 @@ namespace OAuth
         private readonly string _secret;
         private readonly string _authToken;
         private readonly string _authTokenSecret;
-        private readonly IOAuthSignatureData _provider;
+        private readonly IOAuthSignatureData _signatureDataProvider;
         private readonly KeyValuePair<string, string> _hmacSha1Param;
         private readonly KeyValuePair<string, string> _apiKeyParam;
         private readonly KeyValuePair<string, string> _authTokenParam;
@@ -22,13 +23,13 @@ namespace OAuth
         // the bytes used for the HMAC-SHA1
         private readonly byte[] _keyBytes;
 
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersion oauthVersion) :
-            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(oauthVersion))
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
+            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(OAuthVersion.OneZero))
         {
         }
 
-        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
-            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(OAuthVersion.OneZeroA))
+        public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret, OAuthVersion oauthVersion) :
+            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(oauthVersion))
         {
         }
 
@@ -38,12 +39,14 @@ namespace OAuth
             _secret = secret;
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
-            _provider = provider;
+            _signatureDataProvider = provider;
 
             _hmacSha1Param = new KeyValuePair<string, string>(Constants.oauth_signature_method, "HMAC-SHA1");
             _apiKeyParam = new KeyValuePair<string, string>(Constants.oauth_consumer_key, _apiKey);
             _authTokenParam = new KeyValuePair<string, string>(Constants.oauth_token, _authToken);
-            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _provider.GetOAuthVersion());
+
+            // Construct the OAuthVersion parameter based on the requested version.
+            _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _signatureDataProvider.GetOAuthVersion());
             _keyBytes = OAuthHelpers.CreateHashKeyBytes(_secret, _authTokenSecret);
 
             this.InnerHandler = new HttpClientHandler();
@@ -59,8 +62,8 @@ namespace OAuth
                 _authTokenParam,
 
                 // Add the parameters that are unique for each call
-                new KeyValuePair<string,string>(Constants.oauth_nonce, _provider.GetNonce()),
-                new KeyValuePair<string,string>(Constants.oauth_timestamp, _provider.GetTimeStamp()),
+                new KeyValuePair<string,string>(Constants.oauth_nonce, _signatureDataProvider.GetNonce()),
+                new KeyValuePair<string,string>(Constants.oauth_timestamp, _signatureDataProvider.GetTimeStamp()),
             };
 
             // if we have specified the OAuthVersion, add it!
@@ -85,7 +88,14 @@ namespace OAuth
             {
                 string requestContent = await request.Content.ReadAsStringAsync();
 
-                queryString = $"{queryString}&{requestContent}";
+                if (string.IsNullOrEmpty(queryString))
+                {
+                    queryString = requestContent;
+                }
+                else
+                {
+                    queryString = $"{queryString}&{requestContent}";
+                }
             }
 
             if (!string.IsNullOrEmpty(queryString))
@@ -112,7 +122,13 @@ namespace OAuth
 
         private void ParseParameters(SortedSet<KeyValuePair<string, string>> parameters, string queryString)
         {
-            int previousPosition = 0; // beginning of the string
+            // if the first character of the string is a '?' then it came from the query string
+            // otherwise it came from the request body.
+            // Because we make certain assumptions about where a string starts, we need to account 
+            // for those differences in the previous position initialization
+            // 0 - if we have a query string, so we skip over the first character
+            // -1 - if we don't have a query string '?'
+            int previousPosition = queryString[0] == '?' ? 0 : -1; // beginning of the string
 
             queryString = Uri.UnescapeDataString(queryString);
             queryString = queryString.Replace('+', ' ');

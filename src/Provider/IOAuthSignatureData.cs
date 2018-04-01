@@ -1,4 +1,4 @@
-﻿namespace OAuth
+﻿namespace OAuth.Signature
 {
     public interface IOAuthSignatureData
     {
