@@ -21,5 +21,6 @@ namespace OAuth
         internal const string oauth_version_1 = "1.0";
         internal const string oauth_version_1a = "1.0a";
         internal const string OAuthAuthenticationHeader = "OAuth";
+        internal const string ContentType = "application/x-www-form-urlencoded";
     }
 }
