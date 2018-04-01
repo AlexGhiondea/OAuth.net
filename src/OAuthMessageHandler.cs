@@ -24,7 +24,7 @@ namespace OAuth
         private readonly byte[] _keyBytes;
 
         public OAuthMessageHandler(string apiKey, string secret, string authToken, string authTokenSecret) :
-            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(OAuthVersion.OneZeroA))
+            this(apiKey, secret, authToken, authTokenSecret, new OAuthSignatureDataProvider(OAuthVersion.OneZero))
         {
         }
 
@@ -40,10 +40,12 @@ namespace OAuth
             _authToken = authToken;
             _authTokenSecret = authTokenSecret;
             _signatureDataProvider = provider;
-
+            
             _hmacSha1Param = new KeyValuePair<string, string>(Constants.oauth_signature_method, "HMAC-SHA1");
             _apiKeyParam = new KeyValuePair<string, string>(Constants.oauth_consumer_key, _apiKey);
             _authTokenParam = new KeyValuePair<string, string>(Constants.oauth_token, _authToken);
+
+            // Construct the OAuthVersion parameter based on the requested version.
             _oauthVersionParam = new KeyValuePair<string, string>(Constants.oauth_version, _signatureDataProvider.GetOAuthVersion());
             _keyBytes = OAuthHelpers.CreateHashKeyBytes(_secret, _authTokenSecret);
 
