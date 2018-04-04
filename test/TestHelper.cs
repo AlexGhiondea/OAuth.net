@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Reflection;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace OAuth.Net.Tests
@@ -27,9 +25,9 @@ namespace OAuth.Net.Tests
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public string ComputeOAuthSignature(HttpRequestMessage request, string nonce, string timestamp, OAuthVersion version = OAuthVersion.OneZeroA)
+        public string ComputeOAuthSignature(HttpRequestMessage request, string nonce, string timestamp, OAuthVersion version)
         {
-            OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp, version ));
+            OAuth.OAuthMessageHandler msgHandler = new OAuthMessageHandler(_apiKey, _secret, _authToken, _authTokenSecret, new TestOAuthProvider(nonce, timestamp, version));
 
             // get access to the method.
             MethodInfo getAuthHeaderMethod = msgHandler.GetType().GetMethod("GetAuthenticationHeaderForRequest",
