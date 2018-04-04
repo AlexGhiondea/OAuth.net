@@ -26,9 +26,9 @@ namespace OAuth.Net.Tests
         /// </summary>
         /// <param name="request"></param>
         /// <returns></returns>
-        public string ComputeOAuthSignature(HttpRequestMessage request, string nonce, string timestamp, OAuthVersion version)
+        public async Task<string> ComputeOAuthSignatureAsync(HttpRequestMessage request, string nonce, string timestamp, OAuthVersion version)
         {
-            OAuthMessageHandler msgHandler = new OAuthMessageHandler(
+            using (OAuthMessageHandler msgHandler = new OAuthMessageHandler(
                 _apiKey,
                 _clientSecret,
                 _authToken,
@@ -36,9 +36,26 @@ namespace OAuth.Net.Tests
                 new TestOAuthProvider(
                     nonce,
                     timestamp,
-                    version));
+                    version)))
+            {
+                return await GetOAuthParameterFromHandlerAsync(msgHandler, request, "oauth_signature");
+            }
+        }
 
-            return GetOAuthParameterFromHandlerAsync(msgHandler, request,"oauth_signature").Result;
+        public async Task<string> ComputeOAuthVersionAsync(HttpRequestMessage request, string nonce, string timestamp, OAuthVersion version)
+        {
+            using (OAuthMessageHandler msgHandler = new OAuthMessageHandler(
+                _apiKey,
+                _clientSecret,
+                _authToken,
+                _authTokenSecret,
+                new TestOAuthProvider(
+                    nonce,
+                    timestamp,
+                    version)))
+            {
+                return await GetOAuthParameterFromHandlerAsync(msgHandler, request, "oauth_version");
+            }
         }
 
         private async Task<string> GetOAuthParameterFromHandlerAsync(OAuthMessageHandler handler, HttpRequestMessage request, string requestedParameter)
