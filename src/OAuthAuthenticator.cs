@@ -18,7 +18,7 @@ namespace OAuth
         private readonly string _oauthVersion;
 
         public OAuthAuthenticator(string apiKey, string secret)
-            :this(apiKey, secret, OAuthVersion.OneZeroA)
+            : this(apiKey, secret, OAuthVersion.OneZero)
         {
 
         }

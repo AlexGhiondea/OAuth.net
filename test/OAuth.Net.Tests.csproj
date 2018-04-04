@@ -15,7 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\src\OAuth.net.csproj" />
   </ItemGroup>
-
+  
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <OutputPath>..\bin\Debug\</OutputPath>
   </PropertyGroup>
