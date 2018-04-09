@@ -21,11 +21,6 @@ namespace OAuth.Net.Tests
             _authTokenSecret = authTokenSecret;
         }
 
-        /// <summary>
-        /// Using reflection, it will call the method that computes the oauth signature
-        /// </summary>
-        /// <param name="request"></param>
-        /// <returns></returns>
         public async Task<string> ComputeOAuthSignatureAsync(HttpRequestMessage request, string nonce, string timestamp, OAuthVersion version)
         {
             using (OAuthMessageHandler msgHandler = new OAuthMessageHandler(
@@ -39,6 +34,30 @@ namespace OAuth.Net.Tests
                     version)))
             {
                 return await GetOAuthParameterFromHandlerAsync(msgHandler, request, "oauth_signature");
+            }
+        }
+
+        public async Task<string> ComputeOAuthVersionAsync(HttpRequestMessage request, OAuthVersion version)
+        {
+            using (OAuthMessageHandler msgHandler = new OAuthMessageHandler(
+                _apiKey,
+                _clientSecret,
+                _authToken,
+                _authTokenSecret, version))
+            {
+                return await GetOAuthParameterFromHandlerAsync(msgHandler, request, "oauth_version");
+            }
+        }
+
+        public async Task<string> ComputeOAuthVersionAsync(HttpRequestMessage request)
+        {
+            using (OAuthMessageHandler msgHandler = new OAuthMessageHandler(
+                _apiKey,
+                _clientSecret,
+                _authToken,
+                _authTokenSecret))
+            {
+                return await GetOAuthParameterFromHandlerAsync(msgHandler, request, "oauth_version");
             }
         }
 

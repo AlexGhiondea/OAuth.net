@@ -12,7 +12,7 @@ namespace OAuth.Net.Tests
         {
             TestHelper th = new TestHelper("apiKey", "secret", "token", "tokenSecret");
 
-            Assert.Equal("1.0", await th.ComputeOAuthVersionAsync(GetDummyRequest(), "nonce", "timestamp", OAuthVersion.OneZero));
+            Assert.Equal("1.0", await th.ComputeOAuthVersionAsync(GetDummyRequest()));
         }
 
         [Fact]
@@ -20,7 +20,7 @@ namespace OAuth.Net.Tests
         {
             TestHelper th = new TestHelper("apiKey", "secret", "token", "tokenSecret");
 
-            Assert.Null(await th.ComputeOAuthVersionAsync(GetDummyRequest(), "nonce", "timestamp", OAuthVersion.Omit));
+            Assert.Null(await th.ComputeOAuthVersionAsync(GetDummyRequest(), OAuthVersion.Omit));
         }
 
         [Fact]
@@ -28,14 +28,15 @@ namespace OAuth.Net.Tests
         {
             TestHelper th = new TestHelper("apiKey", "secret", "token", "tokenSecret");
 
-            Assert.Equal("1.0", await th.ComputeOAuthVersionAsync(GetDummyRequest(), "nonce", "timestamp", OAuthVersion.OneZero));
+            Assert.Equal("1.0", await th.ComputeOAuthVersionAsync(GetDummyRequest(), OAuthVersion.OneZero));
         }
 
         [Fact]
         public async Task ValidateOAuthVersionOneZeroAHandler()
         {
             TestHelper th = new TestHelper("apiKey", "secret", "token", "tokenSecret");
-            Assert.Equal("1.0a", await th.ComputeOAuthVersionAsync(GetDummyRequest(), "nonce", "timestamp", OAuthVersion.OneZeroA));
+
+            Assert.Equal("1.0a", await th.ComputeOAuthVersionAsync(GetDummyRequest(), OAuthVersion.OneZeroA));
         }
 
         private HttpRequestMessage GetDummyRequest()
