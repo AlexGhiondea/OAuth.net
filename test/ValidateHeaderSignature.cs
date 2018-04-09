@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Threading.Tasks;
 using Xunit;
 
 namespace OAuth.Net.Tests
@@ -7,10 +8,10 @@ namespace OAuth.Net.Tests
     public class ValidateHeaderSignature
     {
         [Fact]
-        public void ValidateSignature1()
+        public async Task ValidateSignature1()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Get,
                     "http://www.foo.com/"),
@@ -20,10 +21,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("Q%2FzBeRiPDZFUdMQHJyIoD%2BmVxkk%3D", result);
         }
         [Fact]
-        public void ValidateSignature2()
+        public async Task ValidateSignature2()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Get,
                     "https://www.foo.com/"),
@@ -33,10 +34,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("FWTCA%2F0ecBYWJvv3ufnfsr9GCEk%3D", result);
         }
         [Fact]
-        public void ValidateSignature3()
+        public async Task ValidateSignature3()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Get,
                     "http://www.foo.com/?param1=value1"),
@@ -46,10 +47,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("K6IBBq0q7Nv1oac%2BF4SHw5OSSaU%3D", result);
         }
         [Fact]
-        public void ValidateSignature4()
+        public async Task ValidateSignature4()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Get,
                     "https://www.foo.com/?param1=value1&param2=value2"),
@@ -59,10 +60,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("PazW%2FIVb6D%2Bsn5Z73z2jg79U8k8%3D", result);
         }
         [Fact]
-        public void ValidateSignature5()
+        public async Task ValidateSignature5()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Get,
                     "https://www.foo.com/?param1=value1&param2&param3"),
@@ -72,10 +73,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("jp%2F1Yh1cHd6yPDgX%2BsbHQV9ITNM%3D", result);
         }
         [Fact]
-        public void ValidateSignature6()
+        public async Task ValidateSignature6()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Get,
                     "https://www.foo.com/?param1=value1&param2&param3&altParam=$34"),
@@ -85,10 +86,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("vNBSSnUXEIw9NUEZay9%2FzgFlw10%3D", result);
         }
         [Fact]
-        public void ValidateSignature7()
+        public async Task ValidateSignature7()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Post,
                     "https://www.foo.com/?Zed=one&Alpha&Beta"),
@@ -98,10 +99,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("ixPe0T85xtBNamcPP4cvATsgVDE%3D", result);
         }
         [Fact]
-        public void ValidateSignature8()
+        public async Task ValidateSignature8()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Post,
                     "https://www.foo.com/?Zed=one&Alpha-Is-Allowed&Beta"),
@@ -111,10 +112,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("66iCpYzWSy6kb88J22ZBTjTSvks%3D", result);
         }
         [Fact]
-        public void ValidateSignature9()
+        public async Task ValidateSignature9()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Post,
                     "https://www.foo.com/?These_Chars-are.Allowed~here"),
@@ -124,10 +125,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("B3Rt%2Fz1ssytWlEB5WRVV%2F9nUoa0%3D", result);
         }
         [Fact]
-        public void ValidateSignature10()
+        public async Task ValidateSignature10()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Post,
                     "https://www.foo.com/?Escape[these]parameters"),
@@ -137,10 +138,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("iVmkZgBGLZDU99Sc1MezFnVP5FY%3D", result);
         }
         [Fact]
-        public void ValidateSignature11()
+        public async Task ValidateSignature11()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Post,
                     "https://www.foo.com/?Escapeparameters{}"),
@@ -150,10 +151,10 @@ namespace OAuth.Net.Tests
             Assert.Equal("EeNDJAVIIc1BzviHYP%2B7jAl6BDA%3D", result);
         }
         [Fact]
-        public void ValidateSignature12()
+        public async Task ValidateSignature12()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Post,
                     "https://www.foo.com/?Escape[these]parameters{}"),
@@ -163,7 +164,7 @@ namespace OAuth.Net.Tests
             Assert.Equal("0eQCtR89OhlUPIBqku8PobHIFQA%3D", result);
         }
         [Fact]
-        public void ValidateSignature13()
+        public async Task ValidateSignature13()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
             var request = new HttpRequestMessage(
@@ -175,7 +176,7 @@ namespace OAuth.Net.Tests
                 System.Text.Encoding.ASCII,
                 "application/x-www-form-urlencoded");
 
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 request,
                 "a3d765e9e945436ea84b12273b136177",
                 "1522478039",
@@ -183,7 +184,7 @@ namespace OAuth.Net.Tests
             Assert.Equal("vNBSSnUXEIw9NUEZay9%2FzgFlw10%3D", result);
         }
         [Fact]
-        public void ValidateSignature14()
+        public async Task ValidateSignature14()
         {
             TestHelper th = new TestHelper("1234", "4567", "234", "23424243243");
             var request = new HttpRequestMessage(
@@ -195,17 +196,17 @@ namespace OAuth.Net.Tests
                 System.Text.Encoding.ASCII,
                 "application/x-www-form-urlencoded");
 
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 request,
                 "0f6093ebbee04aa4a9cf6c7e3a095702",
                 "1522479777",
                 OAuthVersion.OneZeroA);
         }
         [Fact]
-        public void ValidateSignaturePerSpecExample()
+        public async Task ValidateSignaturePerSpecExample()
         {
             TestHelper th = new TestHelper("dpf43f3p2l4k3l03", "kd94hf93k423kf44", "nnch734d00sl2jdk", "pfkkdhi9sl3r4s00");
-            var result = th.ComputeOAuthSignature(
+            var result = await th.ComputeOAuthSignatureAsync(
                 new HttpRequestMessage(
                     HttpMethod.Get,
                     "http://photos.example.net/photos?file=vacation.jpg&size=original"),

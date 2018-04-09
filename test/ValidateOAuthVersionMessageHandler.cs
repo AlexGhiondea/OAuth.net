@@ -10,63 +10,38 @@ namespace OAuth.Net.Tests
         [Fact]
         public async Task ValidateDefaultOAuthVersionHandler()
         {
-            using (var handler = new OAuthMessageHandler("apiKey", "secret", "authToken", "authTokenSecret"))
-            {
-                var oauthVersion = await GetOAuthVersionFromHandlerAsync(handler);
+            TestHelper th = new TestHelper("apiKey", "secret", "token", "tokenSecret");
 
-                Assert.Equal("1.0", oauthVersion);
-            }
+            Assert.Equal("1.0", await th.ComputeOAuthVersionAsync(GetDummyRequest()));
         }
 
         [Fact]
         public async Task ValidateOAuthVersionOmitHandler()
         {
-            using (var handler = new OAuthMessageHandler("apiKey", "secret", "authToken", "authTokenSecret", OAuthVersion.Omit))
-            {
-                var oauthVersion = await GetOAuthVersionFromHandlerAsync(handler);
+            TestHelper th = new TestHelper("apiKey", "secret", "token", "tokenSecret");
 
-                Assert.Null(oauthVersion);
-            }
+            Assert.Null(await th.ComputeOAuthVersionAsync(GetDummyRequest(), OAuthVersion.Omit));
         }
 
         [Fact]
         public async Task ValidateOAuthVersionOneZeroHandler()
         {
-            using (var handler = new OAuthMessageHandler("apiKey", "secret", "authToken", "authTokenSecret", OAuthVersion.OneZero))
-            {
-                var oauthVersion = await GetOAuthVersionFromHandlerAsync(handler);
+            TestHelper th = new TestHelper("apiKey", "secret", "token", "tokenSecret");
 
-                Assert.Equal("1.0", oauthVersion);
-            }
+            Assert.Equal("1.0", await th.ComputeOAuthVersionAsync(GetDummyRequest(), OAuthVersion.OneZero));
         }
 
         [Fact]
         public async Task ValidateOAuthVersionOneZeroAHandler()
         {
-            using (var handler = new OAuthMessageHandler("apiKey", "secret", "authToken", "authTokenSecret", OAuthVersion.OneZeroA))
-            {
-                var oauthVersion = await GetOAuthVersionFromHandlerAsync(handler);
+            TestHelper th = new TestHelper("apiKey", "secret", "token", "tokenSecret");
 
-                Assert.Equal("1.0a", oauthVersion);
-            }
+            Assert.Equal("1.0a", await th.ComputeOAuthVersionAsync(GetDummyRequest(), OAuthVersion.OneZeroA));
         }
 
-        private async Task<string> GetOAuthVersionFromHandlerAsync(OAuthMessageHandler handler)
+        private HttpRequestMessage GetDummyRequest()
         {
-            var testHandler = new TestHttpMessageHandler();
-            handler.InnerHandler = testHandler;
-
-            using (var httpClient = new HttpClient(handler, disposeHandler: false))
-            {
-                await httpClient.GetAsync("http://example.com");
-            }
-
-            var request = testHandler.SentMessages.Single();
-            var authHeaderParameter = request.Headers.Authorization.Parameter;
-
-            // extract the oauth version
-            string[] elems = authHeaderParameter.Split(',');
-            return elems.SingleOrDefault(x => x.StartsWith("oauth_version"))?.Split('=')[1];
+            return new HttpRequestMessage(HttpMethod.Get, "http://example.com");
         }
     }
 }
