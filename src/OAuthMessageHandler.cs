@@ -113,7 +113,12 @@ namespace OAuth
             {
                 if (param.Key.StartsWith("oauth"))
                 {
-                    sb.AppendFormat("{0}={1},", param.Key, System.Net.WebUtility.HtmlEncode(param.Value));
+                    // per spec (Section 3.5.1, point 2) https://tools.ietf.org/html/rfc5849#section-3.5.1:
+                    // 2.Each parameter's name is immediately followed by an "=" character
+                    // (ASCII code 61), a """ character (ASCII code 34), the parameter
+                    // value(MAY be empty), and another """ character (ASCII code 34).
+
+                    sb.AppendFormat("{0}=\"{1}\",", param.Key, System.Net.WebUtility.HtmlEncode(param.Value));
                 }
             }
             sb.Remove(sb.Length - 1, 1);
