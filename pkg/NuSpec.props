@@ -7,10 +7,10 @@
     <PackageLicenseUrl>https://raw.githubusercontent.com/AlexGhiondea/OAuth.net/master/LICENSE</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/AlexGhiondea/OAuth.net</PackageProjectUrl>
     <PackageTags>OAuth 1.0a, OAuth 1.0, Authentication, OAuth, HttpMessageHandler, HttpClient</PackageTags>
-    <AssemblyVersion>1.5.1</AssemblyVersion>
-    <FileVersion>1.5.1</FileVersion>
-    <PackageVersion>1.5.1</PackageVersion>
-    <Version>1.5.1</Version>
+    <AssemblyVersion>1.6.0</AssemblyVersion>
+    <FileVersion>1.6.0</FileVersion>
+    <PackageVersion>1.6.0</PackageVersion>
+    <Version>1.6.0</Version>
     <PackageOutputPath>..\bin\$(Configuration)\</PackageOutputPath>
     <Description>Implementation of OAuth 1.0a protocol. Supports transparent authentication via HttpMessageHandler</Description>
   </PropertyGroup>
