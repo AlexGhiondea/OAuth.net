@@ -5,7 +5,6 @@
   <PropertyGroup>
     <OutputType>library</OutputType>
     <TargetFrameworks>netstandard1.3</TargetFrameworks>
-    <DebugType>full</DebugType>
   </PropertyGroup>
 
   <PropertyGroup Condition="Exists('c:\Windows')">
