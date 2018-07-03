@@ -20,7 +20,7 @@ echo Restoring packages
 dotnet restore %_solution%
 
 echo Cleaning solution
-dotnet clean %_solution%
+dotnet clean %_solution% -c %_config%
 
 echo Building solution
 dotnet build %_solution% -c %_config%
