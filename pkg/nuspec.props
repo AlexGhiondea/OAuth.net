@@ -4,7 +4,7 @@
     <Company />
     <Product />
     <Copyright>Alex Ghiondea (c) 2020</Copyright>
-    <PackageLicenseUrl>https://raw.githubusercontent.com/AlexGhiondea/OAuth.net/master/LICENSE</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/AlexGhiondea/OAuth.net</PackageProjectUrl>
     <PackageTags>OAuth 1.0a, OAuth 1.0, Authentication, OAuth, HttpMessageHandler, HttpClient</PackageTags>
     <AssemblyVersion>1.7.0</AssemblyVersion>
