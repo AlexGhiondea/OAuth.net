@@ -2,7 +2,7 @@
 
 [![NuGet version](https://img.shields.io/nuget/v/Oauth.Net.svg?style=flat)](https://www.nuget.org/packages/oauth.net)
 [![Nuget downloads](https://img.shields.io/nuget/dt/Oauth.Net.svg?style=flat)](https://www.nuget.org/packages/oauth.net)
-[![Build status](https://ci.appveyor.com/api/projects/status/github/AlexGhiondea/Oauth.Net?branch=master&svg=true)](https://ci.appveyor.com/project/AlexGhiondea/Oauth-Net)
+![Build And Test](https://github.com/AlexGhiondea/OAuth.net/workflows/Build%20And%20Test/badge.svg)
 [![codecov](https://codecov.io/gh/AlexGhiondea/OAuth.net/branch/master/graph/badge.svg)](https://codecov.io/gh/AlexGhiondea/Oauth.Net)
 [![MIT License](https://img.shields.io/github/license/AlexGhiondea/Oauth.Net.svg)](https://github.com/AlexGhiondea/Oauth.Net/blob/master/LICENSE)
 ========
